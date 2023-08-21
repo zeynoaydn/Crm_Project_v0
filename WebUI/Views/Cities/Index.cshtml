@@ -1,0 +1,61 @@
+﻿@*@using Entities.Concrete;
+@{
+    var cities = ViewData["Cities"] as List<Cities>;
+}*@
+
+@model List<Business.Dtos.CitiesDto>
+
+@foreach (var item in Model)
+{
+    <div>
+        @item.CountryId
+        @item.CityName
+    </div>
+}
+
+<div><h1>Cities</h1></div>
+
+<button type="button" class="btn btn-warning" id="handleGetCities">
+    Verileri Çek
+</button>
+
+<table class="table table-bordered">
+    <tbody id="cities_list">
+    </tbody>
+</table>
+
+@*@foreach(var item in cities){
+    <div>
+        @item.CityName
+        @item.Id
+    </div>
+}*@
+
+<script>
+    $('#handleGetCities').click(function () {
+        $.ajax({
+            url: "@Url.Action("GetCities","Cities")",
+            method: "POST",
+            dataType: "json",
+            success: function (response) {
+                console.log(response)
+                var cities_list = $("#cities_list");
+                cities_list.empty();
+                cities_list.append(`
+                            <tr>
+                                <th>Country Id</th>
+                                <th>City Name</th>
+                            </tr>
+                        `);
+                response.map(item => {
+                    cities_list.append(`
+                                 <tr>
+                            <th> ${item.countryId}</th>
+                            <td>${item.cityName}</td>
+                                </tr>
+                            `)
+                })
+            }
+        })
+    })
+</script>
